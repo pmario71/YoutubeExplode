@@ -14,9 +14,9 @@
     Icon="/favicon.ico"
     Loaded="Window_OnLoaded"
     WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
+    <!-- <Window.DataContext>
         <viewModels:MainViewModel />
-    </Window.DataContext>
+    </Window.DataContext> -->
 
     <DockPanel>
         <!--  Header  -->
@@ -26,25 +26,28 @@
             Orientation="Vertical">
             <!--  Query  -->
             <materialControls:Card Margin="12">
-                <TextBox
-                    x:Name="QueryTextBox"
-                    FontSize="16"
-                    Text="{Binding Query}"
-                    Theme="{DynamicResource SoloTextBox}"
-                    Watermark="YouTube video URL or ID">
-                    <TextBox.InnerRightContent>
-                        <Button
-                            Padding="4"
-                            Command="{Binding PullMetadataCommand}"
-                            IsDefault="True"
-                            Theme="{DynamicResource MaterialFlatButton}">
-                            <materialIcons:MaterialIcon
-                                Width="24"
-                                Height="24"
-                                Kind="ArrowRight" />
-                        </Button>
-                    </TextBox.InnerRightContent>
-                </TextBox>
+                <DockPanel >
+                    <Button Height="24" Width="24" Padding="4" DockPanel.Dock="Right">...</Button>
+                    <TextBox
+                        x:Name="QueryTextBox"
+                        FontSize="16"
+                        Text="{Binding Query}"
+                        Theme="{DynamicResource SoloTextBox}"
+                        Watermark="YouTube video URL or ID">
+                        <TextBox.InnerRightContent>
+                            <Button
+                                Padding="4"
+                                Command="{Binding PullMetadataCommand}"
+                                IsDefault="True"
+                                Theme="{DynamicResource MaterialFlatButton}">
+                                <materialIcons:MaterialIcon
+                                    Width="24"
+                                    Height="24"
+                                    Kind="ArrowRight" />
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </DockPanel>
             </materialControls:Card>
 
             <!--  Progress  -->

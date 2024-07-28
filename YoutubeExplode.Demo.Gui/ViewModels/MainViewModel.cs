@@ -11,6 +11,7 @@ using YoutubeExplode.Channels;
 using YoutubeExplode.Common;
 using YoutubeExplode.Demo.Gui.Utils;
 using YoutubeExplode.Demo.Gui.Utils.Extensions;
+using YoutubeExplode.Demo.Gui.Views;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
@@ -19,7 +20,18 @@ namespace YoutubeExplode.Demo.Gui.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly ConfigurationReader _config;
+
     private readonly YoutubeClient _youtube = new();
+
+    public MainViewModel()
+    {
+        _config = new ConfigurationReader();
+        if (!_config.Read())
+        {
+            throw new Exception("Unable to read profile configuration from 'profiles.csv'");
+        }
+    }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(PullMetadataCommand))]
@@ -208,6 +220,16 @@ public partial class MainViewModel : ObservableObject
             Progress = 0;
         }
     }
+
+    // [RelayCommand(CanExecute = nameof(IsBusy))]
+    // private async Task EditProfilesAsync()
+    // {
+    //     var store = new ProfileEditorViewModel();
+    //     var dlg = new ProfileEditorWindow();
+    //     dlg.DataContext = store;
+
+    //     var result = await dlg.ShowDialog<ProfileEditorViewModel>(this);
+    // }
 
     private bool CanDownloadClosedCaptionTrack(ClosedCaptionTrackInfo? trackInfo) =>
         !IsBusy && Video is not null && trackInfo is not null;
