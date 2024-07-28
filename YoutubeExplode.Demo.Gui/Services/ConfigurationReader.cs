@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using YoutubeExplode.Common;
 
 namespace YoutubeExplode.Demo.Gui;
 
@@ -23,7 +24,6 @@ public class ConfigurationReader
     public bool Read()
     {
         var items = new List<ConfigEntry>();
-        var res = new Range[2];
 
         var line = _config.ReadLine();
 
@@ -32,20 +32,30 @@ public class ConfigurationReader
 
         while (line != null)
         {
-            ReadOnlySpan<char> lineSpan = line.AsSpan();
-            if (lineSpan.Split(res, ';', StringSplitOptions.TrimEntries) == 2)
-            {
-                var item = new ConfigEntry() { Name = line[res[0]], Value = line[res[1]], };
-                items.Add(item);
-            }
-            else
-            {
+            if (!TryParse(line, items))
                 return false;
-            }
+
             line = _config.ReadLine();
         }
         this.Entries = items;
         return true;
+    }
+
+    internal static bool TryParse(string line, ICollection<ConfigEntry> collection)
+    {
+        var res = new Range[3];
+        if (line.AsSpan().Split(res, ';', StringSplitOptions.TrimEntries) == 3)
+        {
+            var item = new ConfigEntry()
+            {
+                Name = line[res[0]],
+                Resolution = Enum.Parse<Resolution>(line[res[1]], true),
+                Path = line[res[2]],
+            };
+            collection.Add(item);
+            return true;
+        }
+        return false;
     }
 }
 
@@ -57,5 +67,15 @@ public class ConfigReaderSettings
 public record ConfigEntry
 {
     public required string Name { get; set; }
-    public required string Value { get; set; }
+
+    public Resolution Resolution { get; set; }
+
+    public required string Path { get; set; }
+}
+
+public enum Resolution
+{
+    Low,
+    Medium,
+    High
 }

@@ -4,11 +4,44 @@ namespace YoutubeExplode.Demo.Gui.Tests.Services;
 
 public class ConfigurationReaderTests
 {
+
+    [Fact]
+    public void TryParse_valid_line()
+    {
+        string input = "Name1;High;/test/slash/files";
+
+        var collection = new List<ConfigEntry>();
+        var res = ConfigurationReader.TryParse(input, collection);
+
+        Assert.True(res);
+
+        var entry = collection.First();
+        Assert.Equal("Name1", entry.Name);
+        Assert.Equal(Resolution.High, entry.Resolution);
+        Assert.Equal("/test/slash/files", entry.Path);
+    }
+
+    [Fact]
+    public void TryParse_values_are_trimmed()
+    {
+        string input = " Name1 ; Medium ; /test/slash/files ";
+
+        var collection = new List<ConfigEntry>();
+        var res = ConfigurationReader.TryParse(input, collection);
+
+        Assert.True(res);
+
+        var entry = collection.First();
+        Assert.Equal("Name1", entry.Name);
+        Assert.Equal(Resolution.Medium, entry.Resolution);
+        Assert.Equal("/test/slash/files", entry.Path);
+    }
+
     [Fact]
     public void SingleEntry()
     {
         string input = """
-                       Name1;/test/slash/files
+                       Name1;Low;/test/slash/files
                        """;
 
         var sut = new ConfigurationReader(GetStreamFromString(input));
@@ -20,26 +53,8 @@ public class ConfigurationReaderTests
 
         var entry = sut.Entries.First();
         Assert.Equal("Name1", entry.Name);
-        Assert.Equal("/test/slash/files", entry.Value);
-    }
-
-    [Fact]
-    public void Entries_are_trimmed()
-    {
-        string input = """
-                        Name1 ; /test/slash/files 
-                       """;
-
-        var sut = new ConfigurationReader(GetStreamFromString(input));
-
-        Assert.True(sut.Read());
-
-        Assert.NotNull(sut.Entries);
-        Assert.Single(sut.Entries!);
-
-        var entry = sut.Entries.First();
-        Assert.DoesNotContain(entry.Name, c => char.IsWhiteSpace(c));
-        Assert.DoesNotContain(entry.Value, c => char.IsWhiteSpace(c));
+        Assert.Equal(Resolution.Low, entry.Resolution);
+        Assert.Equal("/test/slash/files", entry.Path);
     }
 
     [Fact]
@@ -47,9 +62,9 @@ public class ConfigurationReaderTests
     {
         // Given
         string input = """
-                       Name1;/test/slash/files1
-                       Name2;/test/slash/files2
-                       Name3;/test/slash/files3
+                       Name1;Low;/test/slash/files1
+                       Name2;High;/test/slash/files2
+                       Name3;Medium;/test/slash/files3
                        """;
 
         var sut = new ConfigurationReader(GetStreamFromString(input));
@@ -64,7 +79,7 @@ public class ConfigurationReaderTests
 
         var entry = sut.Entries.ElementAt(2);
         Assert.Equal("Name3", entry.Name);
-        Assert.Equal("/test/slash/files3", entry.Value);
+        Assert.Equal("/test/slash/files3", entry.Path);
     }
 
     [Fact]
@@ -84,7 +99,7 @@ public class ConfigurationReaderTests
     public void Support_skipping_header_row()
     {
         string input = """
-                       Name1;/test/slash/files
+                       Name1;High;/test/slash/files
                        """;
 
         var sut = new ConfigurationReader(GetStreamFromString(input), new ConfigReaderSettings { IgnoreHeader = true });

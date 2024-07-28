@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:converters="clr-namespace:YoutubeExplode.Demo.Gui.Converters"
+    xmlns:l="clr-namespace:YoutubeExplode.Demo.Gui"
     xmlns:materialControls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:viewModels="clr-namespace:YoutubeExplode.Demo.Gui.ViewModels"
@@ -27,7 +28,22 @@
             <!--  Query  -->
             <materialControls:Card Margin="12">
                 <DockPanel >
-                    <Button Height="24" Width="24" Padding="4" DockPanel.Dock="Right">...</Button>
+                    <Button Height="24" Width="24" Padding="4" DockPanel.Dock="Right" Content="Profiles">
+                        <Button.Flyout>
+                            <MenuFlyout ItemsSource="{Binding Profiles}">
+                            <MenuFlyout.ItemContainerTheme>
+                                <ControlTheme TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}" x:DataType="l:ConfigEntry">
+
+                                <Setter Property="Header" Value="{Binding Name}"/>
+                                <!-- <Setter Property="ItemsSource" Value="{Binding Profiles}"/> -->
+                                <!-- <Setter Property="Command" Value="{Binding Command}"/>
+                                <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/> -->
+                                
+                                </ControlTheme>
+                            </MenuFlyout.ItemContainerTheme>
+                            </MenuFlyout>
+                        </Button.Flyout>    
+                    </Button>
                     <TextBox
                         x:Name="QueryTextBox"
                         FontSize="16"
