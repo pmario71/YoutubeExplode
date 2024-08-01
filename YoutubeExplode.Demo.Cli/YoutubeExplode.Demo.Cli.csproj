@@ -5,6 +5,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon>../favicon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
