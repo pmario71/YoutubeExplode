@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeExplode.Converter.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeExplode.Demo.Gui.Tests", "YoutubeExplode.Demo.Gui.Tests\YoutubeExplode.Demo.Gui.Tests.csproj", "{DAB0ADA5-F98B-4C63-982A-4E6B8A57A44E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeExplode.Demo.Cli.Tests", "YoutubeExplode.Demo.Cli.Tests\YoutubeExplode.Demo.Cli.Tests.csproj", "{A28BF41C-013A-46DF-8899-AE648AA0DD79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{DAB0ADA5-F98B-4C63-982A-4E6B8A57A44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAB0ADA5-F98B-4C63-982A-4E6B8A57A44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAB0ADA5-F98B-4C63-982A-4E6B8A57A44E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A28BF41C-013A-46DF-8899-AE648AA0DD79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A28BF41C-013A-46DF-8899-AE648AA0DD79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A28BF41C-013A-46DF-8899-AE648AA0DD79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A28BF41C-013A-46DF-8899-AE648AA0DD79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

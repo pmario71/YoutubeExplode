@@ -1,49 +1,37 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using CommandLine;
+// using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.DependencyInjection;
 using YoutubeExplode.Demo.Cli.Utils;
+using YoutubeExplode.Demo.Cli.Verbs;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeExplode.Demo.Cli;
 
-// This demo prompts for video ID and downloads one media stream.
-// It's intended to be very simple and straight to the point.
-// For a more involved example - check out the WPF demo.
 public static class Program
 {
-    public static async Task Main()
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DownloadVerb))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(InfoVerb))]
+    public static async Task Main(string[] args)
     {
-        Console.Title = "YoutubeExplode Demo";
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false)
+            .Build();
 
-        var youtube = new YoutubeClient();
+        // //setup our DI
+        // var serviceCollection = new ServiceCollection()
+        //     .AddSingleton<IConfiguration>(configuration);
+        // var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        // Get the video ID
-        Console.Write("Enter YouTube video ID or URL: ");
-        var videoId = VideoId.Parse(Console.ReadLine() ?? "");
+        var a = Parser.Default.ParseArguments<DownloadVerb, InfoVerb>(args);
 
-        // Get available streams and choose the best muxed (audio + video) stream
-        var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoId);
-        var streamInfo = streamManifest.GetMuxedStreams().TryGetWithHighestVideoQuality();
-        if (streamInfo is null)
-        {
-            // Available streams vary depending on the video and it's possible
-            // there may not be any muxed streams at all.
-            // See the readme to learn how to handle adaptive streams.
-            Console.Error.WriteLine("This video has no muxed streams.");
-            return;
-        }
-
-        // Download the stream
-        var fileName = $"{videoId}.{streamInfo.Container.Name}";
-
-        Console.Write(
-            $"Downloading stream: {streamInfo.VideoQuality.Label} / {streamInfo.Container.Name}... "
-        );
-
-        using (var progress = new ConsoleProgress())
-            await youtube.Videos.Streams.DownloadAsync(streamInfo, fileName, progress);
-
-        Console.WriteLine("Done");
-        Console.WriteLine($"Video saved to '{fileName}'");
+        await a.WithParsedAsync<DownloadVerb>(p => DownloadVerb.Download(configuration, p));
+        await a.WithParsedAsync<InfoVerb>(p => InfoVerb.GetInfo(p));
     }
 }
