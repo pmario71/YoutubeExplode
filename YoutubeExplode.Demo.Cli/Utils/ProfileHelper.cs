@@ -1,4 +1,5 @@
-using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace YoutubeExplode.Demo.Cli.Utils;
 
@@ -17,9 +18,33 @@ public class ProfileHelper
         return false;
     }
 
-    public static string? ResolveProfilePath(IConfiguration cfg, string profileName)
+    /// <summary>
+    /// Resolves path for configured profile name.
+    /// </summary>
+    /// <param name="profileName"></param>
+    /// <returns>path configured in profile</returns>
+    public static string? ResolveProfilePath(string profileName)
     {
-        var result = cfg.GetSection("Profiles")[profileName.ToString()];
-        return result;
+        var configObj = JsonSerializer.Deserialize(
+            File.OpenRead("appsettings.json"),
+            typeof(Config),
+            SourceGenerationContext.Default
+        );
+        var cfg = configObj as Config;
+        string? path = cfg?.Profiles.FirstOrDefault(f => f.Name == profileName)?.Path;
+        return path;
     }
 }
+
+public record Config
+{
+    public required Profile[] Profiles { get; init; }
+}
+
+public record Profile(string Name, string Path);
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Config))]
+[JsonSerializable(typeof(Profile[]))]
+[JsonSerializable(typeof(Profile))]
+internal partial class SourceGenerationContext : JsonSerializerContext { }

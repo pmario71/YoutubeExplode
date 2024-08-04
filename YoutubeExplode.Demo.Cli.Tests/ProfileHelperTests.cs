@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using YoutubeExplode.Demo.Cli.Utils;
 
 namespace YoutubeExplode.Demo.Cli.Tests;
@@ -20,24 +19,27 @@ public class ProfileHelperTests
         Assert.Equal(expected, profileName);
     }
 
-    [Theory]
-    [InlineData("Profile1", "value1")]
-    [InlineData("fdas", null)]
-    public void ResolveProfilePath(string input, string expectedProfilePath)
+    [Fact]
+    public void LoadProfileFromJson()
     {
-        var inmem = new Dictionary<string, string?>
-        {
-            {"Key1", "Value1"},
-            {"Profiles:Profile1", "value1"},
-            {"Profiles:Profile2", "value2"}
-        };
+        // Given
+        var sut = ProfileHelper.ResolveProfilePath("Trainings");
+    
+        // When
+    
+        // Then
+        Assert.NotNull(sut);
+    }
 
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inmem)
-            .Build();
-
-        var profilePath = ProfileHelper.ResolveProfilePath(configuration, input);
-        
-        Assert.Equal(expectedProfilePath, profilePath);
+    [Fact]
+    public void LoadProfileFromJson_profile_not_found()
+    {
+        // Given
+        var sut = ProfileHelper.ResolveProfilePath("unknown");
+    
+        // When
+    
+        // Then
+        Assert.Null(sut);
     }
 }

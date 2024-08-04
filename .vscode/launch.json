@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/YoutubeExplode.Demo.Cli/bin/Debug/net8.0/YoutubeExplode.Demo.Cli.dll",
             "args": ["d","-u", "https://www.youtube.com/watch?v=gKd5KvkKFQI", "-o {Trainings}"],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/YoutubeExplode.Demo.Cli",
             "stopAtEntry": false,
             "console": "internalConsole"
         }

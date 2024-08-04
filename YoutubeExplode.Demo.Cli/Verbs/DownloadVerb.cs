@@ -1,6 +1,5 @@
 using System;
 using CommandLine;
-using Microsoft.Extensions.Configuration;
 using YoutubeExplode.Demo.Cli.Utils;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
@@ -23,7 +22,7 @@ public class DownloadVerb
     )]
     public string DestinationPath { get; set; } = Environment.CurrentDirectory;
 
-    internal static async Task Download(IConfiguration cfg, DownloadVerb args)
+    internal static async Task Download(DownloadVerb args)
     {
         Console.Title = "YoutubeExplode Demo";
 
@@ -32,7 +31,7 @@ public class DownloadVerb
         var profileOption = ProfileHelper.TryGetProfile(destinationPath, out var profileName);
         if (profileOption)
         {
-            var resolvedPath = ProfileHelper.ResolveProfilePath(cfg, profileName!);
+            var resolvedPath = ProfileHelper.ResolveProfilePath(profileName!);
             if (resolvedPath == null)
             {
                 Console.Error.WriteLine($"No profile with name '{profileName}'");
