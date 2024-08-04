@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -25,6 +26,7 @@ public class ProfileHelper
     /// <returns>path configured in profile</returns>
     public static string? ResolveProfilePath(string profileName)
     {
+        string configFileName = DetectConfigFile();
         var configObj = JsonSerializer.Deserialize(
             File.OpenRead("appsettings.json"),
             typeof(Config),
@@ -33,6 +35,21 @@ public class ProfileHelper
         var cfg = configObj as Config;
         string? path = cfg?.Profiles.FirstOrDefault(f => f.Name == profileName)?.Path;
         return path;
+    }
+
+    public static string DetectConfigFile()
+    {
+        string configFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.json";
+        if (File.Exists(configFileName))
+        {
+            return configFileName;
+        }
+        configFileName = "appsettings.json";
+        if (File.Exists(configFileName))
+        {
+            return configFileName;
+        }
+        throw new Exception("No configuration found!");
     }
 }
 
