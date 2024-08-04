@@ -46,6 +46,7 @@ public class DownloadVerb
         var videoId = VideoId.Parse(args.Url);
 
         // Get available streams and choose the best muxed (audio + video) stream
+        var video = await youtube.Videos.GetAsync(videoId);
         var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoId);
         var streamInfo = streamManifest.GetMuxedStreams().TryGetWithHighestVideoQuality();
         if (streamInfo is null)
@@ -58,7 +59,8 @@ public class DownloadVerb
         }
 
         // Download the stream
-        var fileName = Path.Combine(destinationPath, $"{streamInfo.Container.Name}");
+        string title = PathEx.SanitizeFileName(video.Title);
+        var fileName = Path.Combine(destinationPath, title) + $".{streamInfo.Container.Name}";
 
         Console.Write(
             $"Downloading stream: {streamInfo.VideoQuality.Label} / {streamInfo.Container.Name} ... "

@@ -1,4 +1,5 @@
 using CommandLine;
+using YoutubeExplode.Demo.Cli.Utils;
 using YoutubeExplode.Videos;
 
 namespace YoutubeExplode.Demo.Cli.Verbs;
@@ -18,6 +19,7 @@ public class InfoVerb
         var videoId = VideoId.Parse(args.Url);
 
         // Get available streams and choose the best muxed (audio + video) stream
+        var video = await youtube.Videos.GetAsync(videoId);
         var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoId);
         var streamInfo = streamManifest.GetMuxedStreams();
 
@@ -29,9 +31,10 @@ public class InfoVerb
             return;
         }
 
+        string title = PathEx.SanitizeFileName(video.Title);
         foreach (var stream in streamInfo)
         {
-            Console.WriteLine($"{stream.Container.Name}  -  {stream.VideoResolution}");
+            Console.WriteLine($"{title} - {stream.Container.Name}  -  {stream.VideoResolution}");
         }
         Console.WriteLine("Done");
     }
