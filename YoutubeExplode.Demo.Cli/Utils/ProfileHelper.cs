@@ -50,7 +50,7 @@ public class ProfileHelper
         {
             return configFileName;
         }
-        
+
         configFileName = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
         if (File.Exists(configFileName))
         {
