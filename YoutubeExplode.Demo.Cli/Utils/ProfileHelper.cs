@@ -39,12 +39,19 @@ public class ProfileHelper
 
     public static string DetectConfigFile()
     {
-        string configFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.json";
+        string? fname = Assembly.GetExecutingAssembly().GetName().Name;
+        if (fname == null)
+        {
+            throw new Exception("No configuration found!");
+        }
+        fname = Path.ChangeExtension(fname, "json");
+        string configFileName = Path.Combine(System.AppContext.BaseDirectory, fname);
         if (File.Exists(configFileName))
         {
             return configFileName;
         }
-        configFileName = "appsettings.json";
+        
+        configFileName = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
         if (File.Exists(configFileName))
         {
             return configFileName;
