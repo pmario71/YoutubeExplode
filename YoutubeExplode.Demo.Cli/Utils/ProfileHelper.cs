@@ -6,9 +6,16 @@ namespace YoutubeExplode.Demo.Cli.Utils;
 
 public class ProfileHelper
 {
-    public static bool TryGetProfile(string destinationPath, out string? profileName)
+    /// <summary>
+    /// Checks if provided <see cref="profileOrPath"/> actually references a profile.
+    /// If yes, it returns true an the corresponding profile name.
+    /// </summary>
+    /// <param name="profileOrPath"></param>
+    /// <param name="profileName"></param>
+    /// <returns>true, if profile is specified, false otherwise</returns>
+    public static bool TryGetProfile(string profileOrPath, out string? profileName)
     {
-        var path = destinationPath.AsSpan().Trim();
+        var path = profileOrPath.AsSpan().Trim();
         if (path[0] == '{' && path[^1] == '}')
         {
             profileName = path[1..^1].ToString();
@@ -26,15 +33,24 @@ public class ProfileHelper
     /// <returns>path configured in profile</returns>
     public static string? ResolveProfilePath(string profileName)
     {
+        Config? cfg = LoadConfig();
+        string? path = cfg?.Profiles.FirstOrDefault(f => f.Name == profileName)?.Path;
+        return path;
+    }
+
+    /// <summary>
+    /// Loads configuration from configuration file (<executable filenam>.config)
+    /// </summary>
+    /// <returns></returns>
+    public static Config? LoadConfig()
+    {
         string configFileName = DetectConfigFile();
         var configObj = JsonSerializer.Deserialize(
             File.OpenRead("appsettings.json"),
             typeof(Config),
             SourceGenerationContext.Default
         );
-        var cfg = configObj as Config;
-        string? path = cfg?.Profiles.FirstOrDefault(f => f.Name == profileName)?.Path;
-        return path;
+        return configObj as Config;
     }
 
     public static string DetectConfigFile()
