@@ -42,36 +42,47 @@ public class ProfileHelper
     /// Loads configuration from configuration file (<executable filenam>.config)
     /// </summary>
     /// <returns></returns>
-    public static Config? LoadConfig()
+    public static Config? LoadConfig(bool verbose = false)
     {
-        string configFileName = DetectConfigFile();
+        string configFileName = DetectConfigFile(verbose);
         var configObj = JsonSerializer.Deserialize(
-            File.OpenRead("appsettings.json"),
+            File.OpenRead(configFileName),
             typeof(Config),
             SourceGenerationContext.Default
         );
         return configObj as Config;
     }
 
-    public static string DetectConfigFile()
+    public static string DetectConfigFile(bool verbose = false)
     {
-        string? fname = Assembly.GetExecutingAssembly().GetName().Name;
-        if (fname == null)
-        {
-            throw new Exception("No configuration found!");
-        }
-        fname = Path.ChangeExtension(fname, "json");
-        string configFileName = Path.Combine(System.AppContext.BaseDirectory, fname);
+        if (verbose)
+            Console.WriteLine("probing for:  <executable filename>.json");
+
+        string? fname = "YoutubeExplode.json";
+        string configFileName = Path.Combine(AppContext.BaseDirectory, fname);
+
         if (File.Exists(configFileName))
         {
             return configFileName;
+        }
+        else if (verbose)
+        {
+            Console.WriteLine($"Probing: {configFileName}");
         }
 
-        configFileName = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
+        if (verbose)
+            Console.WriteLine("probing for:  appsettings.json");
+
+        configFileName = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
         if (File.Exists(configFileName))
         {
             return configFileName;
         }
+        else if (verbose)
+        {
+            Console.WriteLine($"Probing: {configFileName}");
+        }
+
         throw new Exception("No configuration found!");
     }
 }

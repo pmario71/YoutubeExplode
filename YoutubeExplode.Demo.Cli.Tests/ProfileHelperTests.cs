@@ -1,5 +1,6 @@
 using YoutubeExplode.Demo.Cli.Utils;
 
+
 namespace YoutubeExplode.Demo.Cli.Tests;
 
 public class ProfileHelperTests

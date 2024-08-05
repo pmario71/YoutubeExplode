@@ -26,11 +26,14 @@ public class InfoVerb
     )]
     public bool Profiles { get; set; }
 
+    [Option(longName: "verbose", shortName: 'v')]
+    public bool verbose { get; set; }
+
     internal static async Task GetInfo(InfoVerb args)
     {
         if (args.Profiles)
         {
-            var config = ProfileHelper.LoadConfig();
+            var config = ProfileHelper.LoadConfig(args.verbose);
             if (config == null)
             {
                 System.Console.WriteLine("No config file found!");
