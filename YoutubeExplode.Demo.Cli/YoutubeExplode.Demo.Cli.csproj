@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>

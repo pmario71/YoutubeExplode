@@ -43,7 +43,8 @@ public class DownloadVerb
         var youtube = new YoutubeClient();
 
         // Get the video ID
-        var videoId = VideoId.Parse(args.Url);
+        string sanitizedUrl = UrlPatcher.StripUrlParameters(args.Url).ToString();
+        var videoId = VideoId.Parse(sanitizedUrl);
 
         // Get available streams and choose the best muxed (audio + video) stream
         var video = await youtube.Videos.GetAsync(videoId);
@@ -68,6 +69,9 @@ public class DownloadVerb
 
         using (var progress = new ConsoleProgress())
             await youtube.Videos.Streams.DownloadAsync(streamInfo, fileName, progress);
+
+        //patch reference to youtube url into metadata: comment tag
+        Tagger.SetUrlToCommentTag(fileName, sanitizedUrl);
 
         Console.WriteLine("Done");
         Console.WriteLine($"Video saved to '{fileName}'");
