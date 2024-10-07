@@ -50,7 +50,12 @@ public class ProfileHelper
             typeof(Config),
             SourceGenerationContext.Default
         );
-        return configObj as Config;
+        var typed = configObj as Config;
+        if (typed != null)
+        {
+            typed.ProfileLocation = configFileName;
+        }
+        return typed;
     }
 
     public static string DetectConfigFile(bool verbose = false)
@@ -90,6 +95,9 @@ public class ProfileHelper
 public record Config
 {
     public required Profile[] Profiles { get; init; }
+
+    [JsonIgnore]
+    public string? ProfileLocation { get; set; }
 }
 
 public record Profile(string Name, string Path);

@@ -43,4 +43,20 @@ public class ProfileHelperTests
         // Then
         Assert.Null(sut);
     }
+
+    [Fact]
+    public void LoadProfileFromJson_ProfileLocation_set()
+    {
+        // Given
+        var sut = ProfileHelper.LoadConfig();
+    
+        // When
+        var path = ProfileHelper.DetectConfigFile();
+    
+        // Then
+        Assert.NotNull(sut);
+        Assert.Equal(path, sut.ProfileLocation);
+
+        Assert.EndsWith("appsettings.json", sut.ProfileLocation);
+    }
 }
