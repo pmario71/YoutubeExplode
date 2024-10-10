@@ -49,7 +49,8 @@ public class DownloadVerb
         // Get available streams and choose the best muxed (audio + video) stream
         var video = await youtube.Videos.GetAsync(videoId);
         var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoId);
-        var streamInfo = streamManifest.GetMuxedStreams().TryGetWithHighestVideoQuality();
+        var streamInfo = streamManifest.GetAudioOnlyStreams().TryGetWithHighestBitrate
+        GetMuxedStreams().TryGetWithHighestVideoQuality();
         if (streamInfo is null)
         {
             // Available streams vary depending on the video and it's possible
@@ -75,5 +76,27 @@ public class DownloadVerb
 
         Console.WriteLine("Done");
         Console.WriteLine($"Video saved to '{fileName}'");
+    }
+}
+
+/// <summary>
+/// Extensions for <see cref="IStreamInfo" />.
+/// </summary>
+public static class StreamInfoExtensions
+{
+
+
+    /// <summary>
+    /// Gets the stream with the highest bitrate.
+    /// Returns null if the sequence is empty.
+    /// </summary>
+    public static IStreamInfo? TryGetMediumQuality(
+        this IEnumerable<IStreamInfo> streamInfos
+    )
+    {
+        var ordered = streamInfos.OrderBy(s => s.Bitrate);
+        int mid = (streamInfos.Count()+1)/2;
+
+        return ordered.ElementAt(mid);
     }
 }
